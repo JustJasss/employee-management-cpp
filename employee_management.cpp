@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <limits>
 
 using namespace std;
 
@@ -54,18 +55,48 @@ public:
 		int age, id;
 
 		cout << "Create Employee info" << endl;
-		cout << "Enter name: ";
-		getline(cin, name);
 
-		cout << "Enter company: ";
-		getline(cin, company);
+		do
+		{
+			cout << "Enter name: ";
+			getline(cin, name);
+			if (name.empty())
+			{
+				cout << "Name cannot be empty. Please try again." << endl;
+			}
+		} while (name.empty());
+
+		do
+		{
+			cout << "Enter company: ";
+			getline(cin, company);
+			if (company.empty())
+			{
+				cout << "Company cannot be empty. Please try again." << endl;
+			}
+		} while (company.empty());
 
 		cout << "Enter age: ";
 		cin >> age;
 
+		while (age <= 0 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Invalid age input. Please enter a positive integer: " << endl;
+			cin >> age;
+		}
+
 		cout << "Enter employee ID: ";
 		cin >> id;
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		while (id <= 0 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Invalid ID input. Please enter a positive integer: " << endl;;
+			cin >> id;
+		}
 
 		return Employee(name, company, age, id);
 	}
@@ -92,13 +123,23 @@ void employeeEdit(Employee& employee1)
 		cout << "3. Edit age." << endl;
 		cout << "4. Edit ID" << endl;
 		cout << "5. Return to main menu." << endl;
+
 		cin >> selectedOption;
+
+		while (selectedOption <= 0 || selectedOption > 5 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Invalid selection input. Please enter a positive integer corresponding to the options: " << endl;
+			cin >> selectedOption;
+		}
 
 		switch (selectedOption)
 		{
 		case 1:
 		{
 			string name;
+
 			cout << "*Edit name*" << endl;
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, name);
@@ -109,6 +150,7 @@ void employeeEdit(Employee& employee1)
 		case 2:
 		{
 			string company;
+
 			cout << "*Edit company*" << endl;
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, company);
@@ -121,16 +163,18 @@ void employeeEdit(Employee& employee1)
 			int age;
 			cout << "*Edit age*" << endl;
 			cin >> age;
-			if (age <= 0 || cin.fail())
+
+			while (age <= 0 || cin.fail())
 			{
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 				cout << "Invalid age input. Try again." << endl;
 				break;
 			}
-			else
-			{
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				employee1.setAge(age);
-			}
+
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			employee1.setAge(age);
+
 			cout << endl;
 			break;
 		}
@@ -139,16 +183,17 @@ void employeeEdit(Employee& employee1)
 			int id;
 			cout << "*Edit ID*" << endl;
 			cin >> id;
-			if (id < 0 || cin.fail())
+
+			while (id < 0 || cin.fail())
 			{
-				cout << "Invalid ID input. Try again." << endl;
-				break;
-			}
-			else
-			{
+				cin.clear();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				employee1.setID(id);
+				cout << "Invalid ID input. Try again:" << endl;
 			}
+
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			employee1.setID(id);
+
 			cout << endl;
 			break;
 		}
@@ -178,11 +223,18 @@ int main()
 		cout << "4. Exit." << endl;
 
 		cin >> selectedOption;
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		
+		while (selectedOption <= 0 || selectedOption > 4 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			cout << "Invalid selection input. Please enter a positive integer corresponding to the options: " << endl;
+			cin >> selectedOption;
+		}
 
 		switch (selectedOption)
 		{
-		case 1:			//add employee
+		case 1:
 		{
 			employees.push_back(Employee::employeeCapture());
 			cout << endl;
@@ -211,7 +263,7 @@ int main()
 				break;
 			}
 
-			if (index > 0 && index <= (int)employees.size())
+			if (index > 0 && index <= employees.size())
 			{
 				employeeEdit(employees[index - 1]);
 			}
@@ -229,7 +281,6 @@ int main()
 		}
 		}
 	} while (!exit);
-
 
 	return 0;
 }
