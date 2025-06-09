@@ -277,11 +277,6 @@ static void employeeEdit(vector<unique_ptr<Employee>>& employees, int index)
 					cout << "ID remains unchanged (Still: " << employee->getID() << endl;
 				}
 
-				/*if(employeeIndexer(employees, id) != -1)
-				{
-					cout << "ID already exists." << endl;
-					break;
-				}*/
 				else if (employeeIndexer(employees, id) != -1)
 				{
 					cout << "ID already in use. Enter a unique ID:" << endl;
