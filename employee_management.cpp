@@ -6,8 +6,8 @@
 
 //using namespace std;
 
-using std::cout;
-using std::string;
+using std::cout;		//Apparently better than using namespace std.
+using std::string;		//I ended up declaring the frequently used rather than calling in the entire namespace.
 using std::vector;
 using std::cin;
 using std::endl;
@@ -168,7 +168,7 @@ int getUniqueEmployeeID(const vector<unique_ptr<Employee>>& employees)
 	}
 }
 
-void displayMenu(int menu)
+static void displayMenu(int menu)
 {
 	switch (menu)
 	{
@@ -200,7 +200,7 @@ void displayMenu(int menu)
 	}
 }
 
-void employeeDisplay(const unique_ptr<Employee>& employee)  
+static void employeeDisplay(const unique_ptr<Employee>& employee)
 {  
     //cout << "Displaying all employee info:" << endl;
 	//cout << endl;
@@ -211,7 +211,7 @@ void employeeDisplay(const unique_ptr<Employee>& employee)
 	//cout << endl;
 }
 
-void employeeDisplayALL(const vector<unique_ptr<Employee>>& employees)
+static void employeeDisplayALL(const vector<unique_ptr<Employee>>& employees)
 {
 	for (size_t i = 0; i < employees.size(); i++)
 	{
@@ -221,7 +221,7 @@ void employeeDisplayALL(const vector<unique_ptr<Employee>>& employees)
 	}
 }
 
-void employeeEdit(vector<unique_ptr<Employee>>& employees, int index)
+static void employeeEdit(vector<unique_ptr<Employee>>& employees, int index)
 {
 	unique_ptr<Employee>& employee = employees[index];
 	bool returnToMainMenu = false;
@@ -274,14 +274,25 @@ void employeeEdit(vector<unique_ptr<Employee>>& employees, int index)
 
 				if (id == employee->getID())
 				{
-					cout << "ID remains unchanged (Still " << employee->getID() << endl;
-					break;
+					cout << "ID remains unchanged (Still: " << employee->getID() << endl;
 				}
 
-				if(employeeIndexer(employees, id) == -1)
+				/*if(employeeIndexer(employees, id) != -1)
 				{
 					cout << "ID already exists." << endl;
 					break;
+				}*/
+				else if (employeeIndexer(employees, id) != -1)
+				{
+					cout << "ID already in use. Enter a unique ID:" << endl;
+					int newID = getUniqueEmployeeID(employees);					
+					employee->setID(newID);
+					cout << "ID successfully updated to a unique ID." << endl;
+				}
+				else
+				{
+					employee->setID(id);
+					cout << "ID successfully updated." << endl;
 				}
 
 				//if (employeeIndexer(employees, id) == -1)						I tried to implement something similar to this in the class but no dice.
@@ -375,7 +386,8 @@ int main()
 
 				if (employeeIndexer(employees, newEmployee.getID()) != -1)		//if employeeIndexer returns -1 it means that the ID doesn't exist (yet), if it doesn't then the ID exists.
 				{
-					cout << "An employee with that ID already exists." << endl;		
+					cout << "An employee with that ID already exists.";
+					cout << "Enter a unique ID:" << endl;
 					int newID = getUniqueEmployeeID(employees);					//if the ID does already exist on the database, user can create a new ID. getUniqueEmployeeID() will ensure user inputs unique ID.
 					newEmployee.setID(newID);									//once user inputs unique ID, getUniqueEmployeeID() will return the unique ID which will be placed in newEmployee object.
 				}
